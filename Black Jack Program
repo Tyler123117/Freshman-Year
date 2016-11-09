@@ -1,0 +1,380 @@
+/** Name: Michael Slaton  
+ * Version Date: 10/13/16
+ * Lab Section: 002
+ * Program Name: Assignment 2 
+ * Purpose: This program is made with the purpose of simulating a game of black jack. The user and dealer both draw 2 cards and, based on the user's
+ *         input, the user can draw up another 2 cards. The dealer also decides, based on AI, if they will draw another 2 cards or not. At the end
+ *         the program evaluates the score of both users and determines a winner. The user may then choose to play again or quit.
+ * Pseudo Code:
+ *		   1. Print out introductory statement with instructions to play game using displayMessage 
+ *		   2. Ask the user if they would like to start a game or discontinue the program
+ *            A. If the user starts a game:
+ *               1. Draw 2 cards for both the player and the dealer using draw card method
+ *               	A. Assign a name to the card using name card method
+ *               	B. Determine if the card is Royalty and give it an appropriate value using royalty value method
+ *               2. Ask the user if they would like to draw another card
+ *               	A. If the user selects Yes: 
+ *               		1. Draw the third card for the user using draw card method
+ *               		2. Assign a name to the card using name card method
+ *               		3. Determine if the card is Royalty and give it an appropriate value using royalty value method
+ *               		4. Adds the card's value to the total
+ *               		5. Ask the user if they would like to draw another card
+ *               			A. If the user selects Yes:
+ *               				1. Draw the fourth card for the user 
+ *               				2. Assign a name to the card using name card method
+ *               				3. Determine if the card is Royalty and give it an appropriate value using royalty value method
+ *               				4. Add the card's value to the total
+ *               			B. If the user selects No: 
+ *               				1. Continue to next step.
+ *               3.Use the dealerDecision method to determine if it will draw another card
+ *               	A. If dealerDecision returns True:
+ *               		1. Draw the third card for the dealer
+ *               		2. Assign a name to the card using name card method
+ *               		3. Determine if the card is Royalty and give it an appropriate value using royalty value method
+ *               		4. Add the card's value to the total
+ *               		5. Use dealerDecision to determine if it will draw another card
+ *               			A. If dealerDecision returns True:
+ *               				1. Draw the third card for the dealer
+ *               				2. Assign a name to the card using name card method
+ *               				3. Determine if the card is Royalty and give it an appropriate value using royalty value method
+ *               				4. Add the card's value to the total
+ *               			B. If dealerDecision returns False:
+ *               				1. Continue to next step.
+ *               	B. If dealerDecision returns False:
+ *               		1. Continue to next step.
+ *               4. Use the numberOfAces method to determine how many aces the user has
+ *               5. Use the numberOfAces method to determine how many aces the dealer has
+ *               6. If the user has any aces, run a for loop that loops for the number of Aces
+ *               	A. In each iteration:
+ *               		1. Ask the user if they would like to count the ace as a 1 or an 11
+ *               			A. If the user selects 1:
+ *               				1. Subtract 10 from the player total (Since the drawCard method returns 11 for aces and it to player total)
+ *               			B. If the user selects 11:
+ *               				1. Leave the player total alone and continue to the next step.
+ *               7. If the user has any aces, run a for loop that loops for the number of Aces
+ *               	A. In each iteration:
+ *               		1. Using dealerDecision method to determine if it will select 1 or 11
+ *               			A. If the dealerDecision returns true;
+ *               				1. Subtract 10 from the dealer total (Since the drawCard method returns 11 for aces and it to player total)
+ *               			B. If the dealerDecision returns false;
+ *               				1. Leave the dealer total alone and continue to the next step.
+ *               8. Use the determineWinner method to decide who wins the draw
+ *               	A. If the user wins, add 1 to player's win total
+ *               9. Ask user if they would like to play another game
+ *               	A. If the user decides to play another game, go back to second step.
+ *               	B. If the user decides to not play again, continue to next step.
+ *            B. If user decides no, continue to next step
+ *        3. Print the user's total win count with a goodbye message.
+ *        4. End program.
+ *
+ *               	
+ */ 
+
+import java.util.Scanner;
+
+public class BlackJack 
+{
+
+	public static void main(String [] args)
+	{
+		//Defines variables
+			int card1,card2,card3,card4, numberOfAces, playerTotal=0, dealerTotal; 
+			int dealerCard1 , dealerCard2, dealerCard3,dealerCard4, winCount=0;
+			String cardName1="", cardName2="",cardName3="",cardName4="";
+			String dealerName1="", dealerName2="",dealerName3="",dealerName4="";
+			String choice, winner;
+			int intChoice, numberOfDealerAces=0;
+			Scanner input = new Scanner(System.in);
+			
+		//Determines card values for the user and the dealer for their initial draw
+			
+				
+		//Introductory statement/ asks user if they want to start a game
+			System.out.print("Welcome to to Barry's Black Jack!\nHere are the rules:\n\n");
+			displayMessage();
+			System.out.print("\n\nWould you like to begin a game?\nYes or no: ");
+				choice = input.next().toUpperCase();
+				
+				//If player decides they would like to play a game
+					if(choice.equals("YES"))
+					{
+						do{
+						//Draws the first card for the user 
+							card1 = drawCard();
+							//Assigns the name to that card in a string format 
+								cardName1 = nameCard(card1);
+								//Determines if the card is royalty. If it is, gives it a value of 10
+									card1 = royaltyValue(cardName1, card1);
+						//Draws the second card for the user 
+							card2 = drawCard();
+							//Assigns the name to that card in a string format 
+								cardName2 = nameCard(card2);
+								//Determines if the card is royalty. If it is, gives it a value of 10
+									card2 = royaltyValue(cardName2, card2);
+									
+						//Draws the first card for the dealer 
+							dealerCard1 = drawCard();
+							//Assigns the name to that card in a string format 
+								dealerName1 = nameCard(dealerCard1);
+								//Determines if that card is royalty. If it is, gives a value of 10
+									dealerCard1 = royaltyValue(dealerName1, dealerCard1);
+						//Draws the second card for the dealer
+							dealerCard2 = drawCard();
+							//Assigns the name to that card in a string format 
+								dealerName2 = nameCard(dealerCard2);
+								//Determines if that card is royalty. If it is, gives a value of 10
+									dealerCard2 = royaltyValue(dealerName2, dealerCard2);
+									
+						//Adds the 2 cards of the user to get the total
+							playerTotal = card1 + card2;
+						//Adds the 2 cards of the dealer to get the total
+							dealerTotal = dealerCard1 + dealerCard2;
+						
+						//Prints out the result of the above code to the user using card names 
+							System.out.print("\nPlayer draws 2 cards:\nCard 1: " + cardName1 + "\nCard 2: " + cardName2 + "\n\nDealer draws:\n"
+									+ "Card 1: " + dealerName1 + "\nCard 2: " + dealerName2 );
+						//Asks if the user would like to draw another card 
+							System.out.print("\n\nWould you like to draw another card? Yes or no: ");
+								choice =  input.next().toUpperCase();	
+						//If the user decides that they do want to draw another card
+							if(choice.equals("YES"))
+							{
+							//Draws the third card for the user and assigns it a value, it then adds it to the total
+								card3 = drawCard();
+								playerTotal += card3;
+								cardName3 = nameCard(card3);
+								card3 = royaltyValue(cardName3, card3);
+							//Prints the results of the above code to the user
+								System.out.print("You drew a " + cardName3);
+							
+							//Asks if the user would like to draw another card
+								System.out.print("\n\nWould you like to draw another card? Yes or no: ");
+								choice =  input.next().toUpperCase();	
+							//If the user decides that they do want to draw another card
+								if(choice.equals("YES"))
+								{
+								//Draws the fourth card for the user and assigns it a value, it then adds it to the total
+									card4 = drawCard();
+									playerTotal += card4;
+									card4 = royaltyValue(cardName4, card4);
+									cardName4 = nameCard(card4);
+								//Prints the results of the above code to the user 
+									System.out.print("You drew a " + cardName4);
+									
+									
+								}
+								
+							}
+							
+						//Decision structure for if the dealer draws a card. Calls dealerDecision method, which returns a random true or false 
+							if(dealerDecision() == true)
+							{
+								//Draws the third card for the dealer and assigns it a value, it then adds that to the total
+									dealerCard3 = drawCard();
+									dealerName3 = nameCard(dealerCard3);
+									dealerCard3 = royaltyValue(dealerName3, dealerCard3);
+									dealerTotal += dealerCard3;
+								//Prints the results of the above code to the user
+									System.out.print("\nDealer draws a card: " + dealerName3);
+								
+							//Decision structure for if the dealer draws another card. Calls dealerDecision method, which returns a random true or false 
+								if(dealerDecision() == true)
+								{
+								//Draws the third card for the dealer and assigns it a value, it then adds that to the total
+									dealerCard4 = drawCard();
+									dealerName4 = nameCard(dealerCard4);
+									dealerCard4 = royaltyValue(dealerName4, dealerCard4);
+									dealerTotal += dealerCard4;
+								//Prints the results of the above code to the user 
+									System.out.print("\nDealer draws a card: " + dealerName4);
+								}
+							}
+							
+						//Method to determine the number of aces in the user's hand 
+							numberOfAces = numberOfAces(cardName1, cardName2, cardName3, cardName4);
+							numberOfDealerAces = numberOfAces(dealerName1, dealerName2, dealerName3, dealerName4);
+						//If the user has any aces, the code below determines if the user would like it to count as a 0 or 11	
+							if(numberOfAces > 0)
+							{
+							//Prints the number of aces the user has
+								System.out.print("\n\nYou have " + numberOfAces + " Ace(s)");
+							//For loop executes and runs through every ace, asking if the user would like that particular one to be 1 or 11
+								for(int i = 1; i <= numberOfAces; i++)
+								{
+									System.out.print("\nWould you like Ace " + i + " to be counted as 1 or 11?");
+									intChoice = input.nextInt();
+									if( intChoice == 1)
+										playerTotal -= 10;
+								}
+							}
+							
+							//If the dealer has any aces, the code below determines if the dealer counts it as 0 or 11
+							if(numberOfDealerAces > 0)
+							{
+							//For loop executes and runs through every ace, asking if the dealer would like that particular one to be 1 or 11
+								for(int i = 1; i <= numberOfAces; i++)
+								{
+									dealerDecision();
+									if(dealerDecision() == true)
+										dealerTotal -= 10;
+								}
+							}
+						
+						//Prints the total that the user and dealer has
+							System.out.print("\n\nYour total is: " + playerTotal + "\nThe dealer's total is: " + dealerTotal);
+						//Calls upon the determineWinner method to see who won the draw
+							winner = determineWinner(playerTotal, dealerTotal);
+						//Prints out the string from winner into the below could to inform the user of who won
+							System.out.print("\n\n" + winner + " won!\n\nWould you like to play again?\nYes or no: ");
+							//If the winner is player, this adds 1 to the win count
+								if(winner.equals("Player"))
+									winCount++;
+							//Gets user input for if they would like to play again and loops if it is yes
+								choice = input.next().toUpperCase();
+						}while(choice.equals("YES"));
+					}
+					
+				//If player decides they do not want to play a game or they want to end
+				
+						System.out.print("\nYou have " + winCount + " total win(s)\nGoodbye!");	
+	}
+	
+	//Determines if a card is royalty, then gets the value of a card if it is royalty 
+		public static int royaltyValue(String x, int y)
+		{
+		//If a card is royalty 
+			if( x.equals("King") || x.equals("Queen") || x.equals("Jack"))
+			//Gives the royalty a value of 10
+				return 10;
+			else
+			//Returns the original value if it is not royalty 
+				return y;
+			
+		}
+	//Displays the rules to the user 
+		public static void displayMessage()
+		{
+		//Introductory message to be displayed to the user at the start 
+			System.out.print("First, the dealer and player each gets two cards.\nThe goal of the game is to get as close, or equal,to 21 as possible without going \nover" 
+					+ ". Whoever is closest to 21 is the winner. If anyone goes over 21,they\nautomatically lose.\nAfter the first two cardsare drawn,"
+					+ " you may decide whether or not to draw again.\nAces may either be 1 or 11. Good luck!");
+		}
+		
+	//Determines the winner of the draw
+		public static String determineWinner(int x, int y)
+		{
+			String z = "";
+		//If x is greater than y and is not greater than 21, it returns Player. Otherwise it returns dealer as the winner.
+			if(x > y)
+			{
+				if( x > 21)
+				{
+					z= "Dealer";
+				}
+				else
+				{
+					z= "Player";
+				}
+			}
+		//If y is greater than x and is not greater than 21, it returns Dealer. Otherwise it returns dealer as the winner.	
+			else if( y > x)
+			{
+				if( y > 21)
+				{
+					z= "Player";
+				}
+				else
+				{
+					z= "Dealer";
+				}
+			}
+		//If both x and y are equal, it returns both players as the winner.
+			else if ( y == x)
+			{
+				z = "Both players";
+			}
+			
+			return z;
+			
+			
+		}
+		
+	//Draws a random number between 1 and 14 to account for all possible draws
+		public static int drawCard()	
+		{	
+			int x = (int)((Math.random()*14)+1);
+			return x;	
+		}
+	
+	//Names the card that the user draws 
+		public static String nameCard(int x)
+		{
+			String cardName = "";
+		//Switch statement evaluates all possible values of int x 
+			switch (x)
+			{
+			//If the x is 11
+				case 11:
+					cardName = "Ace";
+					break;
+			//If x is 12
+				case 12:
+					cardName = "Jack";
+					break;
+			//If x is 13
+				case 13:
+					cardName = "King";
+					break;
+			//If x is 14
+				case 14:
+					cardName = "Queen";
+					break;
+			//If x is any other number
+				default:
+					cardName = Integer.toString(x);
+					break;
+					
+					
+			}
+		//Returns the card name
+			return cardName;
+		}
+		
+	//Determines how many aces the user has by evaluating all cards
+		public static int numberOfAces(String w, String x, String y, String z)
+		{
+		//Determines if any of the cards are aces, if they are, then it adds 1 to ace count.
+			int aceCount=0;
+			if(w.equals("Ace"))
+			{
+				aceCount++;
+			}
+			else if (x.equals("Ace"))
+			{
+				aceCount++;
+			}
+			else if (y.equals("Ace"))
+			{
+				aceCount++;
+			}
+			else if (z.equals("Ace"))
+			{
+				aceCount++;
+			}
+			return aceCount;
+			
+					
+		}
+	
+	//Generates a random number between 0 and 1 and returns true or false based on that information
+		public static boolean dealerDecision()
+		{
+			int x;
+			x = (int)(Math.random()*2);
+			if( x == 0)
+				return false;
+			else
+				return true;
+		}
+	
+}
